@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30803.129
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IXCApiClient", "IXCApiClient\IXCApiClient.csproj", "{EC449941-7A07-4583-B735-9953C36EB2DA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManyHelpers", "..\ManyHelpers\ManyHelpers\ManyHelpers.csproj", "{35652FEC-93BA-446A-B93A-BB27F8DB13E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{EC449941-7A07-4583-B735-9953C36EB2DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC449941-7A07-4583-B735-9953C36EB2DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC449941-7A07-4583-B735-9953C36EB2DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35652FEC-93BA-446A-B93A-BB27F8DB13E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35652FEC-93BA-446A-B93A-BB27F8DB13E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35652FEC-93BA-446A-B93A-BB27F8DB13E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35652FEC-93BA-446A-B93A-BB27F8DB13E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
