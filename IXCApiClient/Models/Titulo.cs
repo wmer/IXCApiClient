@@ -1,8 +1,11 @@
-﻿using System;
+﻿using IXCApiClient.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace IXCApiClient.Models {
+
+    [TableName("fn_areceber")]
     public class Titulo {
         public string id_remessa { get; set; }
         public string gateway_link { get; set; }

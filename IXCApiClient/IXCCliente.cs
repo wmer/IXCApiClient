@@ -4,6 +4,7 @@ using IXCApiClient.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace IXCApiClient {
@@ -43,19 +44,19 @@ namespace IXCApiClient {
         }
 
         private List<Contrato> GetContratos(string filialId = null, string status = null, string id = null) {
-            var callParameters = new CallParameters {
-                Qtype = "cliente_contrato.id",
+            var callParameters = new CallParameters<Contrato> {
+                Qtype = x=> x.id,
                 Query = "",
                 Operador = Operadores.Diferente,
                 Page = "1",
                 Rp = "200000",
-                GridParams = new List<GridParameter>()
+                GridParams = new List<GridParameter<Contrato>>()
             };
 
             if (!string.IsNullOrEmpty(id)) {
                 callParameters.GridParams.Add(
-                       new GridParameter {
-                           Property = "cliente_contrato.id",
+                       new GridParameter<Contrato> {
+                           Property = x => x.id,
                            Operador = Operadores.Igual,
                            Valor = id
                        }
@@ -64,8 +65,8 @@ namespace IXCApiClient {
 
             if (!string.IsNullOrEmpty(status)) {
                 callParameters.GridParams.Add(
-                       new GridParameter {
-                           Property = "cliente_contrato.status",
+                       new GridParameter<Contrato> {
+                           Property = x => x.status,
                            Operador = Operadores.Igual,
                            Valor = status
                        }
@@ -74,8 +75,8 @@ namespace IXCApiClient {
 
             if (!string.IsNullOrEmpty(filialId)) {
                 callParameters.GridParams.Add(
-                       new GridParameter {
-                           Property = "cliente_contrato.id_filial",
+                       new GridParameter<Contrato> {
+                           Property = x => x.id_filial,
                            Operador = Operadores.Igual,
                            Valor = filialId
                        }
@@ -102,19 +103,19 @@ namespace IXCApiClient {
         }
 
         private List<Cliente> GetClientes(string filialId = null, string id = null, string cpf_cnpj = null, bool apenasAtivos = true) {
-            var callParameters = new CallParameters {
-                Qtype = "cliente.id",
+            var callParameters = new CallParameters<Cliente> {
+                Qtype = x => x.id,
                 Query = "",
                 Operador = Operadores.Diferente,
                 Page = "1",
                 Rp = "200000",
-                GridParams = new List<GridParameter>()
+                GridParams = new List<GridParameter<Cliente>>()
             };
 
             if (apenasAtivos) {
                 callParameters.GridParams.Add(
-                   new GridParameter {
-                       Property = "cliente.ativo",
+                   new GridParameter<Cliente> {
+                       Property = x=> x.ativo,
                        Operador = Operadores.Igual,
                        Valor = "S"
                    }
@@ -123,8 +124,8 @@ namespace IXCApiClient {
 
             if (!string.IsNullOrEmpty(id)) {
                 callParameters.GridParams.Add(
-                       new GridParameter {
-                           Property = "cliente.id",
+                       new GridParameter<Cliente> {
+                           Property = x=> x.id,
                            Operador = Operadores.Igual,
                            Valor = id
                        }
@@ -133,8 +134,8 @@ namespace IXCApiClient {
 
             if (!string.IsNullOrEmpty(cpf_cnpj)) {
                 callParameters.GridParams.Add(
-                       new GridParameter {
-                           Property = "cliente.cnpj_cpf",
+                       new GridParameter<Cliente> {
+                           Property =x => x.cnpj_cpf,
                            Operador = Operadores.Igual,
                            Valor = cpf_cnpj
                        }
@@ -143,8 +144,8 @@ namespace IXCApiClient {
 
             if (!string.IsNullOrEmpty(filialId)) {
                 callParameters.GridParams.Add(
-                       new GridParameter {
-                           Property = "cliente.filial_id",
+                       new GridParameter<Cliente> {
+                           Property = x => x.filial_id,
                            Operador = Operadores.Igual,
                            Valor = filialId
                        }
@@ -181,22 +182,22 @@ namespace IXCApiClient {
         }
 
         private List<Titulo> GetTitulos(string status = null, string filialId = null, bool apenasLiberado = true, DateTime initDate = default, DateTime finalDate = default, bool filterByPagDate = false) {
-            var callParameters = new CallParameters {
-                Qtype = "fn_areceber.id_cliente",
+            var callParameters = new CallParameters<Titulo> {
+                Qtype =x => x.id_cliente,
                 Query = "",
                 Operador = Operadores.Diferente,
                 Page = "1",
                 Rp = "200000",
-                SortName = "fn_areceber.data_vencimento",
-                SortOrder = "desc",
-                GridParams = new List<GridParameter>()
+                SortName = x => x.data_vencimento,
+                SortOrder = SortOrder.Descendente,
+                GridParams = new List<GridParameter<Titulo>>()
 
             };
 
             if (!string.IsNullOrEmpty(status)) {
                 callParameters.GridParams.Add(
-                       new GridParameter {
-                           Property = "fn_areceber.status",
+                       new GridParameter<Titulo> {
+                           Property = x => x.status,
                            Operador = Operadores.Igual,
                            Valor = status
                        }
@@ -205,8 +206,8 @@ namespace IXCApiClient {
 
             if (apenasLiberado) {
                 callParameters.GridParams.Add(
-                       new GridParameter {
-                            Property = "fn_areceber.liberado",
+                       new GridParameter<Titulo> {
+                            Property = x => x.liberado,
                             Operador = Operadores.Igual,
                             Valor = "S"
                        }
@@ -215,23 +216,23 @@ namespace IXCApiClient {
 
             if (!string.IsNullOrEmpty(filialId)) {
                 callParameters.GridParams.Add(
-                       new GridParameter {
-                           Property = "fn_areceber.filial_id",
+                       new GridParameter<Titulo> {
+                           Property = x => x.filial_id,
                            Operador = Operadores.Igual,
                            Valor = filialId
                        }
                     );
             }
 
-            var dateParam = "fn_areceber.data_vencimento";
+            Expression<Func<Titulo, IComparable>> dateParam = x => x.data_vencimento;
 
             if (filterByPagDate) {
-                dateParam = "fn_areceber.pagamento_data";
+                dateParam = x => x.pagamento_data;
             }
 
             if (initDate != default) {
                 callParameters.GridParams.Add(
-                 new GridParameter {
+                 new GridParameter<Titulo> {
                      Property = dateParam,
                      Operador = Operadores.MaiorIgaul,
                      Valor = initDate.ToString("yyyyy-MM-dd")
@@ -240,7 +241,7 @@ namespace IXCApiClient {
             }
             if (finalDate != default) {
                 callParameters.GridParams.Add(
-                 new GridParameter {
+                 new GridParameter<Titulo> {
                      Property = dateParam,
                      Operador = Operadores.MenorIgual,
                      Valor = finalDate.ToString("yyyyy-MM-dd")
@@ -252,7 +253,7 @@ namespace IXCApiClient {
             return titulos;
         }
 
-        public List<T> Get<T>(string endpoint, CallParameters callParameters) {
+        public List<T> Get<T>(string endpoint, CallParameters<T> callParameters) {
             var list = new List<T>();
             IXCResponse<T> result = Call<T>(endpoint, callParameters);
             if (result != null && result.registros != null && result.registros.Count() > 0) {
@@ -275,7 +276,7 @@ namespace IXCApiClient {
             return list;
         }
 
-        private IXCResponse<T> Call<T>(string endpoint, CallParameters callParameters) {
+        private IXCResponse<T> Call<T>(string endpoint, CallParameters<T> callParameters) {
             (IXCResponse<T> result, string statusCode, string message) = apiConsumerHelper.Get<IXCResponse<T>>(endpoint, CallParametersToDictionaryConverter.Converter(callParameters));
             return result;
         }

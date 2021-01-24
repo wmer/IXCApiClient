@@ -1,8 +1,10 @@
-﻿using System;
+﻿using IXCApiClient.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace IXCApiClient.Models {
+    [TableName("cliente_contrato")]
     public class Contrato {
         public string id_instalador { get; set; }
         public string indicacao_contrato_id { get; set; }

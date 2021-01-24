@@ -1,8 +1,11 @@
-﻿using System;
+﻿using IXCApiClient.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace IXCApiClient.Models {
+
+    [TableName("cliente")]
     public class Cliente {
         public string senha { get; set; }
         public string acesso_automatico_central { get; set; }
