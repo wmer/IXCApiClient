@@ -43,7 +43,7 @@ namespace IXCApiClient {
                  );
             }
 
-            if (status != ContratoStatus.Todos) {
+            if (status.Value != ContratoStatus.Todos.Value) {
                 callParameters.GridParams.Add(
                        new GridParameter<Contrato> {
                            Property = x => x.status,
@@ -92,7 +92,7 @@ namespace IXCApiClient {
                 GridParams = new List<GridParameter<Cliente>>()
             };
 
-            if (status != ClienteStatus.Todos) {
+            if (status.Value != ClienteStatus.Todos.Value) {
                 callParameters.GridParams.Add(
                    new GridParameter<Cliente> {
                        Property = x=> x.ativo,
@@ -151,7 +151,7 @@ namespace IXCApiClient {
 
             };
 
-            if (status != TituloStatus.Todos) {
+            if (status.Value != TituloStatus.Todos.Value) {
                 callParameters.GridParams.Add(
                        new GridParameter<Titulo> {
                            Property = x => x.status,
@@ -161,7 +161,7 @@ namespace IXCApiClient {
                     );
             }
 
-            if (liberado != TituloLiberado.Todos && status != TituloStatus.Pago) {
+            if (liberado.Value != TituloLiberado.Todos.Value && status.Value != TituloStatus.Pago.Value) {
                 callParameters.GridParams.Add(
                        new GridParameter<Titulo> {
                             Property = x => x.liberado,
@@ -183,7 +183,7 @@ namespace IXCApiClient {
 
             Expression<Func<Titulo, IComparable>> dateParam = x => x.data_vencimento;
 
-            if (status == TituloStatus.Pago) {
+            if (status.Value == TituloStatus.Pago.Value) {
                 dateParam = x => x.pagamento_data;
             }
 

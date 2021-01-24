@@ -18,7 +18,7 @@ namespace IXCApiClient.Converters {
                 ["page"] = callParameters.Page,
                 ["rp"] = callParameters.Rp,
                 ["sortname"] = GetPropertyName<T>(callParameters.SortName),
-                ["sortorder"] = callParameters.SortOrder.Value,
+                ["sortorder"] = callParameters.SortOrder?.Value,
                 ["grid_param"] = JsonConvert.SerializeObject(GridParamsConverter<T>(callParameters.GridParams))
             };
 
@@ -44,9 +44,12 @@ namespace IXCApiClient.Converters {
 
         private static string GetPropertyName<T>(Expression<Func<T, IComparable>> property) {
             var name = "";
-            var tableName = TableHelper.GetTableName<T>();
-            var prop = GetPropertyInfoHelper.GetPropertyInfo<T>(property);
-            name = $"{tableName}.{prop.Name}";
+            if (property != null) {
+                var tableName = TableHelper.GetTableName<T>();
+                var prop = GetPropertyInfoHelper.GetPropertyInfo<T>(property);
+                name = $"{tableName}.{prop.Name}";
+            }
+
             return name;
         }
     }
