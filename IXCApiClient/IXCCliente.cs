@@ -16,34 +16,14 @@ namespace IXCApiClient {
         }
 
         public List<Contrato> GetContratosById(string id) {
-            return GetContratos(null, null, id);
+            return GetContratos(ContratoStatus.Todos, null, id);
         }
 
-        public List<Contrato> GetContratos(string filialId = null) {
-            return GetContratos(filialId);
+        public List<Contrato> GetContratos(ContratoStatus status, string filialId = null) {
+            return GetContratos(status, filialId, null);
         }
 
-        public List<Contrato> GetContratosInativos(string filialId = null) {
-            return GetContratos(filialId, "I");
-        }
-
-        public List<Contrato> GetContratosAtivos(string filialId = null) {
-            return GetContratos(filialId, "A");
-        }
-
-        public List<Contrato> GetPreContratos(string filialId = null) {
-            return GetContratos(filialId, "P");
-        }
-
-        public List<Contrato> GetContratosNegativados(string filialId = null) {
-            return GetContratos(filialId, "N");
-        }
-
-        public List<Contrato> GetContratosDesistentes(string filialId = null) {
-            return GetContratos(filialId, "D");
-        }
-
-        private List<Contrato> GetContratos(string filialId = null, string status = null, string id = null) {
+        private List<Contrato> GetContratos(ContratoStatus status, string filialId = null, string id = null) {
             var callParameters = new CallParameters<Contrato> {
                 Qtype = x=> x.id,
                 Query = "",
@@ -63,12 +43,12 @@ namespace IXCApiClient {
                  );
             }
 
-            if (!string.IsNullOrEmpty(status)) {
+            if (status != ContratoStatus.Todos) {
                 callParameters.GridParams.Add(
                        new GridParameter<Contrato> {
                            Property = x => x.status,
                            Operador = Operadores.Igual,
-                           Valor = status
+                           Valor = status.Value
                        }
                  );
             }
@@ -87,22 +67,22 @@ namespace IXCApiClient {
             return contratos;
         }
 
-        public List<Cliente> GetClientes(string filialId = null, bool apenasAtivos = true) {
-            var clientes = GetClientes(filialId, null, null, apenasAtivos);
-            return clientes;
-        }
-
         public Cliente GetClienteById(string id) {
-            var clientes = GetClientes(null, id, null, false);
+            var clientes = GetClientes(ClienteStatus.Todos, null, id, null);
             return clientes.FirstOrDefault();
         }
 
         public List<Cliente> GetClientePorDocumento(string cpf_cnpj) {
-            var clientes = GetClientes(null, null, cpf_cnpj, false);
+            var clientes = GetClientes(ClienteStatus.Todos, null, null, cpf_cnpj);
             return clientes;
         }
 
-        private List<Cliente> GetClientes(string filialId = null, string id = null, string cpf_cnpj = null, bool apenasAtivos = true) {
+        public List<Cliente> GetClientes(ClienteStatus status, string filialId = null) {
+            var clientes = GetClientes(status, filialId, null, null);
+            return clientes;
+        }
+
+        private List<Cliente> GetClientes(ClienteStatus status, string filialId = null, string id = null, string cpf_cnpj = null) {
             var callParameters = new CallParameters<Cliente> {
                 Qtype = x => x.id,
                 Query = "",
@@ -112,12 +92,12 @@ namespace IXCApiClient {
                 GridParams = new List<GridParameter<Cliente>>()
             };
 
-            if (apenasAtivos) {
+            if (status != ClienteStatus.Todos) {
                 callParameters.GridParams.Add(
                    new GridParameter<Cliente> {
                        Property = x=> x.ativo,
                        Operador = Operadores.Igual,
-                       Valor = "S"
+                       Valor = status.Value
                    }
                 );
             }
@@ -157,31 +137,8 @@ namespace IXCApiClient {
         }
 
 
-        public List<Titulo> GetTitulos(string filialId = null, bool apenasLiberado = true, DateTime initDate = default, DateTime finalDate = default) {
-            var titulos = GetTitulos(null, filialId, apenasLiberado, initDate, finalDate);
-            return titulos;
-        }
 
-        public List<Titulo> GetTitulosAReceber(string filialId = null, bool apenasLiberado = true, DateTime initDate = default, DateTime finalDate = default) {
-            var titulos = GetTitulos("A", filialId, apenasLiberado, initDate, finalDate);
-            return titulos;
-        }
-
-        public List<Titulo> GetTitulosParciais(string filialId = null, bool apenasLiberado = true, DateTime initDate = default, DateTime finalDate = default) {
-            var titulos = GetTitulos("P", filialId, apenasLiberado, initDate, finalDate);
-            return titulos;
-        }
-
-        public List<Titulo> GetTitulosCancelados(string filialId = null, bool apenasLiberado = true, DateTime initDate = default, DateTime finalDate = default) {
-            var titulos = GetTitulos("C", filialId, apenasLiberado, initDate, finalDate);
-            return titulos;
-        }
-        public List<Titulo> GetTitulosPagos(string filialId = null, DateTime initDate = default, DateTime finalDate = default) {
-            var titulos = GetTitulos("R", filialId, false, initDate, finalDate, true);
-            return titulos;
-        }
-
-        private List<Titulo> GetTitulos(string status = null, string filialId = null, bool apenasLiberado = true, DateTime initDate = default, DateTime finalDate = default, bool filterByPagDate = false) {
+        public List<Titulo> GetTitulos(TituloStatus status, TituloLiberado liberado, DateTime initDate = default, DateTime finalDate = default, string filialId = null) {
             var callParameters = new CallParameters<Titulo> {
                 Qtype =x => x.id_cliente,
                 Query = "",
@@ -194,22 +151,22 @@ namespace IXCApiClient {
 
             };
 
-            if (!string.IsNullOrEmpty(status)) {
+            if (status != TituloStatus.Todos) {
                 callParameters.GridParams.Add(
                        new GridParameter<Titulo> {
                            Property = x => x.status,
                            Operador = Operadores.Igual,
-                           Valor = status
+                           Valor = status.Value
                        }
                     );
             }
 
-            if (apenasLiberado) {
+            if (liberado != TituloLiberado.Todos && status != TituloStatus.Pago) {
                 callParameters.GridParams.Add(
                        new GridParameter<Titulo> {
                             Property = x => x.liberado,
                             Operador = Operadores.Igual,
-                            Valor = "S"
+                            Valor = liberado.Value
                        }
                 );
             }
@@ -226,7 +183,7 @@ namespace IXCApiClient {
 
             Expression<Func<Titulo, IComparable>> dateParam = x => x.data_vencimento;
 
-            if (filterByPagDate) {
+            if (status == TituloStatus.Pago) {
                 dateParam = x => x.pagamento_data;
             }
 
