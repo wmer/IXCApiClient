@@ -1,6 +1,7 @@
 ﻿using IXCApiClient.Converters;
 using IXCApiClient.Helpers;
 using IXCApiClient.Models;
+using ManyHelpers.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,11 @@ using System.Text;
 
 namespace IXCApiClient {
     public class IXCCliente {
-        private ApiConsumerHelper apiConsumerHelper;
+        private CosumingHelper apiConsumerHelper;
 
         public IXCCliente(string baseUrl, string token) {
-            apiConsumerHelper = new ApiConsumerHelper(baseUrl, token);
+            apiConsumerHelper = new CosumingHelper(baseUrl)
+                                        .AddcontentType();
         }
 
         public List<Contrato> GetContratosById(string id) {
@@ -218,7 +220,9 @@ namespace IXCApiClient {
                 ["rp"] = "400000"
             };
 
-            (NovoAtendimentoResponse result, string statusCode, string message) = apiConsumerHelper.Get<NovoAtendimentoResponse>("/su_oss_chamado", param);
+            (NovoAtendimentoResponse result, string statusCode, string message) = apiConsumerHelper
+                                                                                    .AddCustomHeaders("ixcsoft", "listar")
+                                                                                    .PostAsync<Dictionary<string, string>, NovoAtendimentoResponse>("/su_oss_chamado", param).Result;
 
             return result;
         }
@@ -228,7 +232,9 @@ namespace IXCApiClient {
                 ["rp"] = "2000000"
             };
 
-            (NovoAtendimentoResponse result, string statusCode, string message) = apiConsumerHelper.Get<NovoAtendimentoResponse>("/su_ticket", param);
+            (NovoAtendimentoResponse result, string statusCode, string message) = apiConsumerHelper
+                                                                                    .AddCustomHeaders("ixcsoft", "listar")
+                                                                                    .PostAsync<Dictionary<string, string>, NovoAtendimentoResponse>("/su_ticket", param).Result;
 
             return result;
         }
@@ -251,7 +257,9 @@ namespace IXCApiClient {
                 ["atualizar_login"] = "S"
             };
 
-            (NovoAtendimentoResponse result, string statusCode, string message) = apiConsumerHelper.Post<NovoAtendimentoResponse>("/su_ticket", param);
+            (NovoAtendimentoResponse result, string statusCode, string message) = apiConsumerHelper
+                                                                                    .AddCustomHeaders("ixcsoft", "inserir")
+                                                                                    .PostAsync<Dictionary<string, string>, NovoAtendimentoResponse>("/su_ticket", param).Result;
 
             return result;
         }
@@ -266,7 +274,9 @@ namespace IXCApiClient {
                 ["base64"] = "S"
             };
 
-            (string result, string statusCode, string message) = apiConsumerHelper.Post<string>("/get_boleto", param);
+            (string result, string statusCode, string message) = apiConsumerHelper
+                                                                    .AddCustomHeaders("ixcsoft", "inserir")
+                                                                    .PostAsync<Dictionary<string, string>, string>("/get_boleto", param).Result;
 
             return result;
         }
@@ -295,7 +305,9 @@ namespace IXCApiClient {
         }
 
         private IXCResponse<T> Call<T>(string endpoint, CallParameters<T> callParameters) {
-            (IXCResponse<T> result, string statusCode, string message) = apiConsumerHelper.Get<IXCResponse<T>>(endpoint, CallParametersToDictionaryConverter.Converter(callParameters));
+            (IXCResponse<T> result, string statusCode, string message) = apiConsumerHelper
+                                                                            .AddCustomHeaders("ixcsoft", "listar")
+                                                                            .PostAsync<Dictionary<string, string>, IXCResponse <T>>(endpoint, CallParametersToDictionaryConverter.Converter(callParameters)).Result;
             return result;
         }
     }

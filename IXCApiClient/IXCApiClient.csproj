@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\ManyHelpers\ManyHelpers\ManyHelpers.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -27,7 +27,7 @@ namespace IXCApiClient.Helpers {
 
         public (T result, string statusCode, string message) Get<T>(string endPoint, Dictionary<string, string> parameters) {
             return GetAsync<T>(endPoint, parameters).Result;
-        }
+        } 
 
         public (T result, string statusCode, string message) Post<T>(string endPoint, Dictionary<string, string> parameters) {
             return PostAsync<T>(endPoint, parameters).Result;
